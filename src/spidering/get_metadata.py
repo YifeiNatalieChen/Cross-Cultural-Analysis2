@@ -20,7 +20,6 @@ def get_metadata(query: str, quantity: int = 200, output: str = 'output',
         sources = set(s.lower()
                       for s in sources).intersection(set(Spider.ALL_SOURCES))
 
-    print("get_metadata.py", query, key)
     query_filename = os.path.join(output, 'query.txt')
     metadata_filename = os.path.join(output, 'metadata')
     title_filename = os.path.join(output, 'titles.json')
@@ -32,8 +31,11 @@ def get_metadata(query: str, quantity: int = 200, output: str = 'output',
     if append and os.path.isfile(metadata_filename):
         spider.load(metadata_filename)
     for source in sources:
-        print("in get_meta: ", source, key)
-        spider.get_metadata(source=source, num=quantity, key=key)
+        print("get_metadata: ", source, key if key else '')
+        try:
+            spider.get_metadata(source=source, num=quantity, key=key)
+        except TypeError:
+            print(f'[ERROR]: Not support for {source}, please check url format')
         spider.save(metadata_filename)
 
     spider.export_query(query_filename)

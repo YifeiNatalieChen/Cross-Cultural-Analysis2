@@ -317,12 +317,7 @@ class Youtube:
         durations = ['short', 'medium', 'long', 'any']
         api_url = 'https://www.googleapis.com/youtube/v3/search'
         params = {'key': key, 'q': query, 'videoDuration': durations[duration], 'part': 'snippet', 'type': 'video',
-                  'maxResults': 50}
-
-        # params = {'key': query, 'q': key, 'videoDuration': durations[duration], 'part': 'snippet', 'type': 'video',
-        #            'maxResults': 50}
-
-        print("param: ",params)
+                  'maxResults': 50, 'relevanceLanguage': 'en-US'}
 
         result = {}
         while len(result) < num:

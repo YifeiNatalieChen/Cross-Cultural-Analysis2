@@ -11,6 +11,3 @@
 
 ## TODO
 * `find_topics.py` line 92, need both vo and ao
-* `spider.py` line 252, `fs = f'https://so.iqiyi.com/so/q_{query}'`
-* Should **NOT** print API key for security purpose
-* `get_metadata.py` `try except`
