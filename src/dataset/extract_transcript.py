@@ -34,8 +34,8 @@ class Transcriber:
             results.append([alternative.transcript, alternative.confidence])
             for word_info in alternative.words:
                 word = word_info.word
-                start_time = word_info.start_time.seconds + word_info.start_time.nanos * 1e-9
-                end_time = word_info.end_time.seconds + word_info.end_time.nanos * 1e-9
+                start_time = word_info.start_time.seconds + word_info.start_time.microseconds * 1e-6
+                end_time = word_info.end_time.seconds + word_info.end_time.microseconds * 1e-6
                 confidence = word_info.confidence
                 results.append([word, start_time, end_time, confidence])
         return results
