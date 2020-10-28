@@ -52,6 +52,7 @@ $results
 
 # Exclude key file
 key.txt
+key.json
 
 # Exclude vscode metafile
 .vscode

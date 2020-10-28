@@ -25,3 +25,15 @@ echo "dataset extract transcripts"
 echo "##############################################"
 # python3 $src/dataset/extract_transcript.py $results/AlphaGo/chinese/audios key.json cross-culture-audios-lgd -o $results/AlphaGo/chinese/transcripts -l cmn-Hans-CN -d audios_cn -t "AlphaGo" "AlphaZero" "DeepMind"
 # python3 $src/dataset/extract_transcript.py $results/AlphaGo/english/audios key.json cross-culture-audios-lgd -o $results/AlphaGo/english/transcripts -l en-US -d audios_en -t "AlphaGo" "Lee Sedol" "Ke Jie"
+
+echo "##############################################"
+echo "dataset process transcript"
+echo "##############################################"
+# python3 $src/dataset/process_transcript.py $results/AlphaGo/chinese/transcripts -o $results/AlphaGo/chinese/processed_transcript.json
+# python3 $src/dataset/process_transcript.py $results/AlphaGo/english/transcripts -o $results/AlphaGo/english/processed_transcript.json
+
+echo "##############################################"
+echo "dataset extract frame"
+echo "##############################################"
+# python3 $src/dataset/extract_frame.py $results/AlphaGo/chinese/processed_transcript.json $results/AlphaGo/chinese/videos -o $results/AlphaGo/chinese/frames -d $results/AlphaGo/chinese/image_text_pairs
+# python3 $src/dataset/extract_frame.py $results/AlphaGo/english/processed_transcript.json $results/AlphaGo/english/videos -o $results/AlphaGo/english/frames -d $results/AlphaGo/english/image_text_pairs
