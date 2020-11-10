@@ -24,41 +24,41 @@ def main():
     result_dir = "results/AlphaGo/BILIBILI"
 
     # Get video metadata
-    if True:
+    if False:
         profile(get_metadata, ("AlphaGo", 10, result_dir +
                                "/video_metadata", False, args.key, sources))
 
     # Download videos
-    if True:
+    if False:
         profile(download, (result_dir+"/video_metadata/metadata",
                            result_dir+"/audios", result_dir+"/videos", sources))
 
     # Analysis
-    if True:
+    if False:
         profile(count, (result_dir+"/video_metadata/titles.txt", result_dir +
                         "/video_metadata/titles_wordcounts.txt", result_dir+"/video_metadata/titles_wordcounts.png"))
         profile(trend, ("results/topics_trend/topics_2018_US.json", "results/topics_trend/topics.txt",
                         "results/topics_trend/topics_data"), {"plot_topics": ["AlphaGo"]})
 
     # Dataset extract audios
-    if True:
+    if False:
         profile(extract_audio, (result_dir+"/videos", result_dir+"/audios"))
 
     # Dataset extract transcripts
-    if True:
+    if False:
         profile(extract_transcript, (result_dir+"/audios", "service_key.json", "extract-transcript", result_dir+"/transcripts", "cmn-Hans-CN"), kwargs={"hint":["AlphaGo", "AlphaZero", "DeepMind"], "gs_dir": "audios_cn"})
 
     # Dataset process transcripts
-    if True:
+    if False:
         profile(process_transcript, (result_dir+"/transcripts", result_dir+"/processed_transcript.json"))
 
     # Dataset extract frame
-    if True:
+    if False:
         profile(extract_frame, (result_dir+"/processed_transcript.json", result_dir+"/videos", result_dir+"/frames", result_dir+"/image_text_pairs"))
 
     # Dataset extract features
     if True:
-        profile(extract_feature, (result_dir+"/image_text_pairs", result_dir+"/features_data"))
+        profile(extract_feature, (result_dir+"/image_text_pairs", result_dir+"/features_data", result_dir+"/frames"))
 
     # Dataset find duplicate
     if False:
