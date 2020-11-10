@@ -59,7 +59,6 @@ def extract_frame(trans_path, video_dir, frame_dir=None, data_path='data', appen
         image_text_pairs_path = data_path + "/" + video_filename.split(".")[0]
         with open(image_text_pairs_path, 'wb') as f:
             pickle.dump(image_text_pairs, f)
-        break
     return image_text_pairs
 
 
