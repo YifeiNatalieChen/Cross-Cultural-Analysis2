@@ -56,6 +56,14 @@ class Transcriber:
 
 def extract_transcript(audio_dir, key_file, gs_bucket, trans_dir='transcripts', mode='en-US', audio_type='flac',
                        gs_dir='audios', threshold=0.85, hint=None, replace=False):
+    '''
+    How to use this function: 
+    1. Go to GCP
+    2. Enable Speech-to-Text API
+    3. Go to APIs & Admin - Credentials and create a new credential for a new service account
+    4. Create a new key for the service account and download the key
+    5. Place the key under the directory where you call this function
+    '''
     trans_type = 'json'
     if not os.path.isdir(trans_dir):
         os.makedirs(trans_dir)
