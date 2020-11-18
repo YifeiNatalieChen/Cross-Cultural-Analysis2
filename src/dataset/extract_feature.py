@@ -57,6 +57,7 @@ def get_image_features(image_text_pairs, extractor):
         features = list(extractor.extract_frames(frames))
         for k, feature, text in zip(batch_keys, features, texts):
             result[k] = (feature, text)
+        del images, frames
     return result
 
 
@@ -108,6 +109,7 @@ def extract_feature(input_frames, output_dir='output', input_frame_dir="input"):
                 os.makedirs(output_dir)
             with open(output_dir + "/" + image_pair_filename, 'wb') as f:
                 pickle.dump(result, f)
+            del result
     return True
 
 
