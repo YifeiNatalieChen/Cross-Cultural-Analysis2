@@ -29,7 +29,7 @@ class Extractor:
         return features
 
 
-def get_image_features(image_text_pairs):
+def get_image_features(image_text_pairs, extractor):
     shape = (224, 224)
     keys = list(image_text_pairs.keys())
     result = {}
@@ -54,7 +54,6 @@ def get_image_features(image_text_pairs):
         frames = (np.stack([cv2.resize(images[k], shape)
                             for k in batch_keys]) / 255).astype(np.float32)
         texts = [image_text_pairs[k][1] for k in batch_keys]
-        extractor = Extractor()
         features = list(extractor.extract_frames(frames))
         for k, feature, text in zip(batch_keys, features, texts):
             result[k] = (feature, text)
@@ -96,18 +95,19 @@ def extract_feature(input_frames, output_dir='output', input_frame_dir="input"):
             frame *= 255
             image_text_pairs[(vid, ms)] = frame, text
 
+    extractor = Extractor()
     for image_pair_filename in os.listdir(input_frames):
         image_pair_path = os.path.join(input_frames, image_pair_filename)
         with open(image_pair_path, 'rb') as f:
             image_text_pairs = pickle.load(f)
-        print("Start extracting features: " + image_pair_filename)
-        result = get_image_features(image_text_pairs)
-        
-        # Save to output
-        if not os.path.isdir(output_dir):
-            os.makedirs(output_dir)
-        with open(output_dir + "/" + image_pair_filename, 'wb') as f:
-            pickle.dump(result, f)
+        if len(image_text_pairs) > 0:
+            print("Start extracting features: " + image_pair_filename)
+            result = get_image_features(image_text_pairs, extractor)
+            # Save to output
+            if not os.path.isdir(output_dir):
+                os.makedirs(output_dir)
+            with open(output_dir + "/" + image_pair_filename, 'wb') as f:
+                pickle.dump(result, f)
     return True
 
 
