@@ -6,24 +6,17 @@ import json
 import matplotlib.pyplot as plt
 import os
 import pickle
-import warnings
 from tqdm import tqdm
 
 
-def extract_frame(trans_path, video_dir, frame_dir=None, data_path='data', append=False):
+def extract_frame(trans_path, video_dir, frame_dir='output', data_dir='data'):
     frame_type = 'png'
     with open(trans_path) as f:
         trans_info = json.load(f)
-    if frame_dir and not os.path.isdir(frame_dir):
+    if not os.path.isdir(frame_dir):
         os.makedirs(frame_dir)
-    data_dir = os.path.dirname(data_path)
-    if append and os.path.isfile(data_path):
-        with open(data_path, 'rb') as f:
-            image_text_pairs = pickle.load(f)
-    else:
-        image_text_pairs = {}
-        if data_dir and not os.path.isdir(data_dir):
-            os.makedirs(data_dir)
+    if not os.path.isdir(data_dir):
+        os.makedirs(data_dir)
 
     for video_filename in os.listdir(video_dir):
         image_text_pairs = {}
@@ -42,8 +35,6 @@ def extract_frame(trans_path, video_dir, frame_dir=None, data_path='data', appen
             capture.set(cv2.CAP_PROP_POS_MSEC, ms)
             ms = capture.get(cv2.CAP_PROP_POS_MSEC)
             frame = capture.read()[1]
-            if not frame_dir:
-                continue
             cleaned_word = ''.join(
                 c.lower() if c.isalnum() else '-' for c in text)
             frame_filename = '_'.join([trans_filename_without_postfix, str(round(ms)), cleaned_word]) + \
@@ -54,12 +45,9 @@ def extract_frame(trans_path, video_dir, frame_dir=None, data_path='data', appen
                              round(ms)] = frame_path, text
         capture.release()
 
-        if not os.path.exists(data_path):
-            os.makedirs(data_path)
-        image_text_pairs_path = data_path + "/" + video_filename.split(".")[0]
+        image_text_pairs_path = os.path.join(data_dir, video_filename.split('.')[0])
         with open(image_text_pairs_path, 'wb') as f:
             pickle.dump(image_text_pairs, f)
-    return image_text_pairs
 
 
 def main():
@@ -68,13 +56,10 @@ def main():
     parser.add_argument('input', help='path of processed transcript file')
     parser.add_argument('video_dir', help='directory of videos to process')
     parser.add_argument('-o', '--output', help='directory of frames to output')
-    parser.add_argument('-d', '--data', default='data',
-                        help='path of output data')
-    parser.add_argument('-a', '--append', action='store_true',
-                        help='whether to append to existing results')
+    parser.add_argument('-d', '--data', default='data', help='path of output data')
     args = parser.parse_args()
     extract_frame(args.input, args.video_dir,
-                  args.output, args.data, args.append)
+                  args.output, args.data)
 
 
 if __name__ == '__main__':
