@@ -59,9 +59,10 @@ def get_image_features(image_text_pairs, extractor):
     return result
 
 
-def extract_feature(input_dir, output_dir='output'):
+def extract_feature(input_dir, output_path='output'):
     if not os.path.exists(input_dir):
         raise FileNotFoundError(f'No such file or directory: {input_dir}')
+    output_dir = os.path.dirname(output_path)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
@@ -73,8 +74,8 @@ def extract_feature(input_dir, output_dir='output'):
         if len(image_text_pairs) > 0:
             print("Start extracting features: " + image_pair_filename)
             result = get_image_features(image_text_pairs, extractor)
-            feature_path = os.path.join(output_dir, image_pair_filename)
-            with open(feature_path, 'wb') as f:
+            feature_path = os.path.join(output_path, image_pair_filename)
+            with open(feature_path, 'ab') as f:
                 pickle.dump(result, f)
             del result
 
