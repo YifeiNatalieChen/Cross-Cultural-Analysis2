@@ -65,6 +65,7 @@ def extract_feature(input_dir, output_path='output'):
     output_dir = os.path.dirname(output_path)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
+    open(output_path, 'wb').close()
 
     extractor = Extractor()
     for image_pair_filename in os.listdir(input_dir):
