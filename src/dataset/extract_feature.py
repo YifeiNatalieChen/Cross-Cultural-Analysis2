@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 import argparse
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pickle
@@ -42,15 +41,14 @@ def get_image_features(image_text_pairs, extractor):
         else:
             batch_keys = keys[i*IMAGE_PAIR_BATCH_SIZE:]
         for key in batch_keys:
-            frame = plt.imread(image_text_pairs[key][0])
+            frame = cv2.imread(image_text_pairs[key][0])
+            frame = cv2.resize(frame, shape)
             if frame.shape[-1] > 3:
                 frame = frame.T[:3].T
-            frame *= 255
             images[key] = frame
 
         # Extract features
-        frames = (np.stack([cv2.resize(images[k], shape)
-                            for k in batch_keys]) / 255).astype(np.float32)
+        frames = (np.stack(images) / 255).astype(np.float32)
         texts = [image_text_pairs[k][1] for k in batch_keys]
         features = list(extractor.extract_features(frames))
         for k, feature, text in zip(batch_keys, features, texts):
