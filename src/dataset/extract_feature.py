@@ -65,7 +65,7 @@ def extract_feature(input_dir, output_path='output'):
     output_dir = os.path.dirname(output_path)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
-    open(output_path, 'wb').close()
+    open(output_path, 'wb').close()  # Create a dummy file first
 
     extractor = Extractor()
     for image_pair_filename in os.listdir(input_dir):
@@ -75,8 +75,7 @@ def extract_feature(input_dir, output_path='output'):
         if len(image_text_pairs) > 0:
             print("Start extracting features: " + image_pair_filename)
             result = get_image_features(image_text_pairs, extractor)
-            feature_path = os.path.join(output_path, image_pair_filename)
-            with open(feature_path, 'ab') as f:
+            with open(output_path, 'ab') as f:
                 pickle.dump(result, f)
             del result
 
