@@ -7,6 +7,7 @@ import os
 import pickle
 from tqdm import tqdm
 from tensorflow import keras
+import matplotlib.pyplot as plt
 
 
 # tf.config.experimental.set_memory_growth(tf.config.experimental.list_physical_devices('GPU')[0], True)
@@ -34,7 +35,7 @@ def get_image_features(image_text_pairs, extractor):
     # Process image pairs in batch
     for i in tqdm(range(len(keys)//IMAGE_PAIR_BATCH_SIZE+1)):
         # Load the batch of keys and images
-        images = {}
+        images = []
         if (i+1)*IMAGE_PAIR_BATCH_SIZE < len(keys):
             batch_keys = keys[i *
                               IMAGE_PAIR_BATCH_SIZE:(i+1)*IMAGE_PAIR_BATCH_SIZE]
@@ -45,7 +46,7 @@ def get_image_features(image_text_pairs, extractor):
             frame = cv2.resize(frame, shape)
             if frame.shape[-1] > 3:
                 frame = frame.T[:3].T
-            images[key] = frame
+            images.append(frame)
 
         # Extract features
         frames = (np.stack(images) / 255).astype(np.float32)
