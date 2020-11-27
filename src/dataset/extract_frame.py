@@ -24,25 +24,23 @@ def extract_frame(trans_path, video_dir, frame_dir='output', data_dir='data'):
         if not os.path.isfile(video_path):
             continue
         dot_pos = video_filename.rfind('.')
-        trans_filename_without_postfix = video_filename[:
-                                                        dot_pos] if dot_pos != -1 else video_filename
-        if trans_filename_without_postfix not in trans_info:
+        vid = video_filename[:dot_pos] if dot_pos != -1 else video_filename
+        if vid not in trans_info:
             continue
         print('Now processing: ' + video_filename)
         capture = cv2.VideoCapture(video_path)
 
-        for ms, text in tqdm(trans_info[trans_filename_without_postfix]):
+        for ms, text in tqdm(trans_info[vid]):
             capture.set(cv2.CAP_PROP_POS_MSEC, ms)
             ms = capture.get(cv2.CAP_PROP_POS_MSEC)
             frame = capture.read()[1]
             cleaned_word = ''.join(
                 c.lower() if c.isalnum() else '-' for c in text)
-            frame_filename = '_'.join([trans_filename_without_postfix, str(round(ms)), cleaned_word]) + \
+            frame_filename = '_'.join([vid, str(round(ms)), cleaned_word]) + \
                              '.' + frame_type
             frame_path = os.path.join(frame_dir, frame_filename)
             plt.imsave(frame_path, frame)
-            image_text_pairs[trans_filename_without_postfix,
-                             round(ms)] = frame_path, text
+            image_text_pairs[vid, round(ms)] = frame_path, text
         capture.release()
 
         image_text_pairs_path = os.path.join(data_dir, video_filename.split('.')[0])
@@ -51,6 +49,8 @@ def extract_frame(trans_path, video_dir, frame_dir='output', data_dir='data'):
 
 
 def main():
+    print('Extracting Frames')
+    print('------------------------')
     parser = argparse.ArgumentParser(
         description='Extract frames from processed transcript and videos')
     parser.add_argument('input', help='path of processed transcript file')
