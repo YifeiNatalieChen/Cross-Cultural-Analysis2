@@ -42,24 +42,35 @@ def get_duplicates(features_cn, features_en, threshold, distance):
     return pairs
 
 
-def find_duplicate(features_path_cn, features_path_en, output_path='output.json', threshold=0.25, distance='angular'):
-    with open(features_path_cn, 'rb') as f:
-        features_cn = pickle.load(f)
-    with open(features_path_en, 'rb') as f:
-        features_en = pickle.load(f)
-    pairs = get_duplicates(features_cn, features_en, threshold, distance)
+def find_duplicate(features_dir_cn, features_dir_en, output_path='output.json', threshold=0.25, distance='angular'):
+    result = []
+    for features_filename_cn in os.listdir(features_dir_cn):
+        features_path_cn = os.path.join(features_dir_cn, features_filename_cn)
+        print('Processing Chinese file: ' + features_filename_cn)
+        with open(features_path_cn, 'rb') as f:
+            features_cn = pickle.load(f)
+        for features_filename_en in os.listdir(features_dir_en):
+            features_path_en = os.path.join(features_dir_en, features_filename_en)
+            print('\tenglish file: ' + features_filename_en)
+            with open(features_path_en, 'rb') as f:
+                features_en = pickle.load(f)
+            pairs = get_duplicates(features_cn, features_en, threshold, distance)
+            result += pairs
+    result.sort(key=lambda x: x[-1])
     output_dir = os.path.dirname(output_path)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
     with open(output_path, 'w') as f:
-        json.dump(pairs, f)
-    return pairs
+        json.dump(result, f)
+    return result
 
 
 def main():
+    print('Finding Nearly Duplicate Frames')
+    print('------------------------')
     parser = argparse.ArgumentParser(description='Find nearly duplicate frames from extracted features')
-    parser.add_argument('input_cn', help='path to chinese features data file')
-    parser.add_argument('input_en', help='path to english features data file')
+    parser.add_argument('input_cn', help='directory of chinese features data file')
+    parser.add_argument('input_en', help='directory of english features data file')
     parser.add_argument('-o', '--output', default='output.json', help='path to output json file')
     parser.add_argument('-t', '--threshold', type=float, default=0.25, help='threshold of similarity')
     parser.add_argument('-d', '--distance', default='angular', help='distance function, can be l1, l2, angular')
