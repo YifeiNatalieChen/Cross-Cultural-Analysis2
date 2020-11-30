@@ -7,7 +7,6 @@ import os
 import pickle
 from tqdm import tqdm
 from tensorflow import keras
-import matplotlib.pyplot as plt
 
 
 # tf.config.experimental.set_memory_growth(tf.config.experimental.list_physical_devices('GPU')[0], True)
@@ -58,13 +57,11 @@ def get_image_features(image_text_pairs, extractor):
     return result
 
 
-def extract_feature(input_dir, output_path='output'):
+def extract_feature(input_dir, output_dir='output'):
     if not os.path.exists(input_dir):
         raise FileNotFoundError(f'No such file or directory: {input_dir}')
-    output_dir = os.path.dirname(output_path)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
-    open(output_path, 'wb').close()  # Create a dummy file first
 
     extractor = Extractor()
     for image_pair_filename in os.listdir(input_dir):
@@ -74,7 +71,8 @@ def extract_feature(input_dir, output_path='output'):
         if len(image_text_pairs) > 0:
             print("Start extracting features: " + image_pair_filename)
             result = get_image_features(image_text_pairs, extractor)
-            with open(output_path, 'ab') as f:
+            feature_path = os.path.join(output_dir, image_pair_filename)
+            with open(feature_path, 'wb') as f:
                 pickle.dump(result, f)
             del result
 
@@ -85,7 +83,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Extract features from image and text pairs')
     parser.add_argument('input', help='directory of pairs data files')
-    parser.add_argument('-o', '--output', default='output', help='path to output data file')
+    parser.add_argument('-o', '--output', default='output', help='directory of output data file')
     args = parser.parse_args()
     extract_feature(args.input, args.output)
 
